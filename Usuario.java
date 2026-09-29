@@ -3,4 +3,15 @@ public class Usuario{
     private String cpf;
     private String iniciais;
     private int id;
+
+    public Usuario(String nome, String cpf, String iniciais, int id){
+        this.nome = nome;
+        this.cpf = cpf;
+        this.iniciais = iniciais;
+        this.id = id;
+    }
+
+    public String getId(){
+        return id;
+    }
 }
