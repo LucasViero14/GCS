@@ -1,3 +1,7 @@
+package servico;
+
+import modelo.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -56,7 +60,7 @@ public class RegistroPedidos {
 	public Pedido buscarMaiorPedidoAberto() {
 		Pedido maior = null;
 		for (Pedido p : pedidos) {
-			if (nomeStatus(p).equals("ABERTO")
+			if (p.getStatus() == StatusPedido.ABERTO.ordinal()
 					&& (maior == null || p.calcularTotal() > maior.calcularTotal())) {
 				maior = p;
 			}
@@ -69,11 +73,11 @@ public class RegistroPedidos {
 	}
 
 	public int quantidadeAprovados() {
-		return contarPorStatus("APROVADO");
+		return contarStatus(StatusPedido.APROVADO, StatusPedido.CONCLUIDO);
 	}
 
 	public int quantidadeReprovados() {
-		return contarPorStatus("REPROVADO");
+		return contarStatus(StatusPedido.REPROVADO);
 	}
 
 	public double percentualAprovados() {
@@ -100,22 +104,16 @@ public class RegistroPedidos {
 		return soma / recentes.size();
 	}
 
-	// O status do Pedido e um int (indice no enum). Comparar pelo nome do valor
-	// permite trocar o enum pela sugestao (com ABERTO) sem alterar esta classe.
-	private String nomeStatus(Pedido p) {
-		statuspedido[] valores = statuspedido.values();
-		int indice = p.getStatus();
-		if (indice < 0 || indice >= valores.length) {
-			return "";
-		}
-		return valores[indice].name();
-	}
-
-	private int contarPorStatus(String nome) {
+	// Pedido.status guarda o indice (ordinal) de StatusPedido.
+	// Um pedido concluido foi aprovado antes, entao conta como aprovado.
+	private int contarStatus(StatusPedido... status) {
 		int contador = 0;
 		for (Pedido p : pedidos) {
-			if (nomeStatus(p).equals(nome)) {
-				contador++;
+			for (StatusPedido s : status) {
+				if (p.getStatus() == s.ordinal()) {
+					contador++;
+					break;
+				}
 			}
 		}
 		return contador;
