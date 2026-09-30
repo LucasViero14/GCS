@@ -2,7 +2,7 @@ public class Administrador extends Usuario{
 private int codAdministrador;
     public Administrador(int id, int codAdministrador){
         super(id);
-        this.codAdministrador = codAdministrador
+        this.codAdministrador = codAdministrador;
     }
 
     public void aprovarPedido(Pedido pedido){
@@ -14,6 +14,6 @@ private int codAdministrador;
     }
 
     public int  getCodAdministrador(){
-        return codAdministrador
+        return codAdministrador;
     }
 }
