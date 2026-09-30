@@ -41,4 +41,20 @@ public class Pedido {
 
 	}
 
+	public LocalDate getDataPedido() {
+		return dataPedido;
+	}
+
+	public Funcionario getFuncionarioSol() {
+		return funcionarioSol;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public ArrayList<ItemPedido> getItens() {
+		return itens;
+	}
+
 }
