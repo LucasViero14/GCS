@@ -5,21 +5,9 @@ public class ItemPedido {
 	private int quant;
 
 	public ItemPedido(String descricao, double valorunit, int quant) {
-		if (descricao == null || descricao.trim().isEmpty()) {
-		}
-		if (valorunit <= 0) {
-
-		}
-		if (quant <= 0) {
-
-		}
 		this.descricao = descricao;
 		this.valorunit = valorunit;
 		this.quant = quant;
-	}
-
-	public double calcularTotal() {
-		return valorunit * quant;
 	}
 
 	public String getDescricao() {
@@ -34,14 +22,25 @@ public class ItemPedido {
 		return valorunit;
 	}
 
+	public void setValorunit(double valorunit) {
+		this.valorunit = valorunit;
+	}
 
 	public int getQuant() {
 		return quant;
 	}
 
-	@Override
+	public void setQuant(int quant) {
+		this.quant = quant;
+	}
+
+	// Total do item = valor unitario x quantidade (enunciado 5.6)
+	public double calcularTotal() {
+		return valorunit * quant;
+	}
+
 	public String toString() {
-		return "ItemPedido{descricao='" + descricao + "', valorunit=" + valorunit +
-				", quant=" + quant + ", total=" + calcularTotal() + "}";
+		return "Item: " + descricao + " | Valor unit: " + valorunit +
+				" | Quantidade: " + quant + " | Total: " + calcularTotal();
 	}
 }
