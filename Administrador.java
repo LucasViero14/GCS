@@ -1,7 +1,7 @@
 public class Administrador extends Usuario{
 private int codAdministrador;
-    public Administrador(int id, int codAdministrador){
-        super(id);
+    public Administrador(String nome, String cpf, String iniciais, int id, int codAdministrador){
+        super(nome, cpf, iniciais, id);
         this.codAdministrador = codAdministrador;
     }
 
@@ -13,7 +13,7 @@ private int codAdministrador;
         pedido.setStatus(2);
     }
 
-    public int  getCodAdministrador(){
+    public int getCodAdministrador(){
         return codAdministrador;
     }
 }
