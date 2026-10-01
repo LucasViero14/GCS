@@ -1,11 +1,29 @@
-public class Usuario {
+public class Usuario{
+    private String nome;
+    private String cpf;
+    private String iniciais;
+    private int id;
 
-	private String nome;
+    public Usuario(String nome, String cpf, String iniciais, int id){
+        this.nome = nome;
+        this.cpf = cpf;
+        this.iniciais = iniciais;
+        this.id = id;
+    }
 
-	private String cpf;
+    public int getId(){
+        return id;
+    }
 
-	private String iniciais;
+    public String getNome(){
+        return nome;
+    }
 
-	private int id;
+    public int getCPF(){
+        return cpf;
+    }
 
+    public int getIniciais(){
+        return iniciais;
+    }
 }

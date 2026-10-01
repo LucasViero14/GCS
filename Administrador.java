@@ -1,11 +1,19 @@
-public class Administrador extends Usuario {
+public class Administrador extends Usuario{
+private int codAdministrador;
+    public Administrador(String nome, String cpf, String iniciais, int id, int codAdministrador){
+        super(nome, cpf, iniciais, id);
+        this.codAdministrador = codAdministrador;
+    }
 
-	public void aprovarPedido(Pedido pedido) {
+    public boolean aprovarPedido(Pedido pedido){
+        return pedido.setStatus(true);
+    }
 
-	}
+    public boolean reprovarPedido(Pedido pedido){
+        return pedido.setStatus(false);
+    }
 
-	public void reprovarPedido(Pedido pedido) {
-
-	}
-
+    public int getCodAdministrador(){
+        return codAdministrador;
+    }
 }
