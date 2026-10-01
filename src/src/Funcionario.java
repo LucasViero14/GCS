@@ -16,6 +16,14 @@ public class Funcionario extends Usuario {
 		this.departamento = departamento;
 	}
 
+	public Pedido[] getPedido(){
+		return pedido;
+	}
+
+	public void setPedido(Pedido[] pedido){
+		this.pedido = pedido;
+	}
+
 	@Override
 	public String toString() {
 		return "Funcionário{" +
