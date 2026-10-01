@@ -1,35 +1,55 @@
 public class Departamento {
 
-	private String nome;
-	private double vmax;
+	private String Nome;
+	private double Vmax;
 
 	public Departamento(String nome, double vmax) {
-		this.nome = nome;
-		this.vmax = vmax;
+
+		if (nome != null && !nome.trim().isEmpty()) {
+			this.Nome = nome;
+		} else {
+			System.out.println("Nome de departamento invalido, usando padrao 'Sem nome'");
+			this.Nome = "Sem nome";
+		}
+
+		if (vmax > 0) {
+			this.Vmax = vmax;
+		} else {
+			System.out.println("Valor maximo invalido, usando padrao 0");
+			this.Vmax = 0;
+		}
 	}
 
 	public String getNome() {
-		return nome;
+		return Nome;
 	}
 
 	public void setNome(String nome) {
-		this.nome = nome;
+		if (nome != null && !nome.trim().isEmpty()) {
+			this.Nome = nome;
+		} else {
+			System.out.println("Tentativa de definir nome invalido para o departamento, mudanca ignorada");
+		}
 	}
 
 	public double getVmax() {
-		return vmax;
+		return Vmax;
 	}
 
 	public void setVmax(double vmax) {
-		this.vmax = vmax;
+		if (vmax > 0) {
+			this.Vmax = vmax;
+		} else {
+			System.out.println("Tentativa de definir valor maximo invalido para o departamento, mudanca ignorada");
+		}
 	}
 
-	// Verifica se o valor do pedido esta dentro do limite do departamento (enunciado 5.7)
+
 	public boolean podeRealizarPedido(double valor) {
-		return valor <= vmax;
+		return valor <= Vmax;
 	}
 
 	public String toString() {
-		return "Departamento: " + nome + " | Valor maximo por pedido: " + vmax;
+		return "Departamento: " + Nome + " | Valor maximo por pedido: " + Vmax;
 	}
 }

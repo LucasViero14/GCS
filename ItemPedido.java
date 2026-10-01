@@ -5,9 +5,27 @@ public class ItemPedido {
 	private int quant;
 
 	public ItemPedido(String descricao, double valorunit, int quant) {
-		this.descricao = descricao;
-		this.valorunit = valorunit;
-		this.quant = quant;
+
+		if (descricao != null && !descricao.trim().isEmpty()) {
+			this.descricao = descricao;
+		} else {
+			System.out.println("Descricao de item invalida, usando padrao 'Sem descricao'");
+			this.descricao = "Sem descricao";
+		}
+
+		if (valorunit > 0) {
+			this.valorunit = valorunit;
+		} else {
+			System.out.println("Valor unitario invalido, usando padrao 0");
+			this.valorunit = 0;
+		}
+
+		if (quant > 0) {
+			this.quant = quant;
+		} else {
+			System.out.println("Quantidade invalida, usando padrao 1");
+			this.quant = 1;
+		}
 	}
 
 	public String getDescricao() {
@@ -15,7 +33,11 @@ public class ItemPedido {
 	}
 
 	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+		if (descricao != null && !descricao.trim().isEmpty()) {
+			this.descricao = descricao;
+		} else {
+			System.out.println("Tentativa de definir descricao invalida para o item, mudanca ignorada");
+		}
 	}
 
 	public double getValorunit() {
@@ -23,7 +45,11 @@ public class ItemPedido {
 	}
 
 	public void setValorunit(double valorunit) {
-		this.valorunit = valorunit;
+		if (valorunit > 0) {
+			this.valorunit = valorunit;
+		} else {
+			System.out.println("Tentativa de definir valor unitario invalido para o item, mudanca ignorada");
+		}
 	}
 
 	public int getQuant() {
@@ -31,10 +57,14 @@ public class ItemPedido {
 	}
 
 	public void setQuant(int quant) {
-		this.quant = quant;
+		if (quant > 0) {
+			this.quant = quant;
+		} else {
+			System.out.println("Tentativa de definir quantidade invalida para o item, mudanca ignorada");
+		}
 	}
 
-	// Total do item = valor unitario x quantidade (enunciado 5.6)
+
 	public double calcularTotal() {
 		return valorunit * quant;
 	}
