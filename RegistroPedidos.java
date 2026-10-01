@@ -50,36 +50,88 @@ public class RegistroPedidos {
 		return resultado;
 	}
 
+	// ESTATISTICAS (8.1 a 8.3)
+
+	// Pedido aberto = status ABERTO (enunciado 5.5). Retorna null se nao houver
 	public Pedido buscarMaiorPedidoAberto() {
-		return null;
+		Pedido maior = null;
+		for (Pedido p : pedidos) {
+			if (nomeStatus(p).equals("ABERTO")
+					&& (maior == null || p.calcularTotal() > maior.calcularTotal())) {
+				maior = p;
+			}
+		}
+		return maior;
 	}
 
 	public int quantidadeTotal() {
-		return 0;
+		return pedidos.size();
 	}
 
 	public int quantidadeAprovados() {
-		return 0;
+		return contarPorStatus("APROVADO");
 	}
 
 	public int quantidadeReprovados() {
-		return 0;
+		return contarPorStatus("REPROVADO");
 	}
 
 	public double percentualAprovados() {
-		return 0;
+		return percentual(quantidadeAprovados());
 	}
 
 	public double percentualReprovados() {
-		return 0;
+		return percentual(quantidadeReprovados());
 	}
 
 	public int quantUlt30Dias() {
-		return 0;
+		return pedidosUlt30Dias().size();
 	}
 
 	public double valorMedioUlt30Dias() {
-		return 0;
+		ArrayList<Pedido> recentes = pedidosUlt30Dias();
+		if (recentes.isEmpty()) {
+			return 0;
+		}
+		double soma = 0;
+		for (Pedido p : recentes) {
+			soma += p.calcularTotal();
+		}
+		return soma / recentes.size();
+	}
+
+	// O status do Pedido e um int (indice no enum). Comparar pelo nome do valor
+	// permite trocar o enum pela sugestao (com ABERTO) sem alterar esta classe.
+	private String nomeStatus(Pedido p) {
+		statuspedido[] valores = statuspedido.values();
+		int indice = p.getStatus();
+		if (indice < 0 || indice >= valores.length) {
+			return "";
+		}
+		return valores[indice].name();
+	}
+
+	private int contarPorStatus(String nome) {
+		int contador = 0;
+		for (Pedido p : pedidos) {
+			if (nomeStatus(p).equals(nome)) {
+				contador++;
+			}
+		}
+		return contador;
+	}
+
+	// Percentual sobre o total de pedidos (0 a 100)
+	private double percentual(int quantidade) {
+		if (pedidos.isEmpty()) {
+			return 0;
+		}
+		return quantidade * 100.0 / pedidos.size();
+	}
+
+	private ArrayList<Pedido> pedidosUlt30Dias() {
+		LocalDate hoje = LocalDate.now();
+		return listarEntreDatas(hoje.minusDays(30), hoje);
 	}
 
 }
