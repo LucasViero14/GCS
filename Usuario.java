@@ -14,4 +14,16 @@ public class Usuario{
     public int getId(){
         return id;
     }
+
+    public String getNome(){
+        return nome;
+    }
+
+    public int getCPF(){
+        return cpf;
+    }
+
+    public int getIniciais(){
+        return iniciais;
+    }
 }

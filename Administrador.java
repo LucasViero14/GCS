@@ -5,12 +5,12 @@ private int codAdministrador;
         this.codAdministrador = codAdministrador;
     }
 
-    public void aprovarPedido(Pedido pedido){
-        pedido.setStatus(1);
+    public boolean aprovarPedido(Pedido pedido){
+        return pedido.setStatus(true);
     }
 
-    public void reprovarPedido(Pedido pedido){
-        pedido.setStatus(2);
+    public boolean reprovarPedido(Pedido pedido){
+        return pedido.setStatus(false);
     }
 
     public int getCodAdministrador(){
