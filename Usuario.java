@@ -19,11 +19,11 @@ public class Usuario{
         return nome;
     }
 
-    public int getCPF(){
+    public String getCPF(){
         return cpf;
     }
 
-    public int getIniciais(){
+    public String getIniciais(){
         return iniciais;
     }
 }
