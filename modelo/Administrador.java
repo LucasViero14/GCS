@@ -1,3 +1,5 @@
+package modelo;
+
 public class Administrador extends Usuario {
 
 	public void aprovarPedido(Pedido pedido) {

@@ -1,3 +1,7 @@
+package app;
+
+import modelo.*;
+
 public class App {
 
 	private Usuario UsuarioLog;

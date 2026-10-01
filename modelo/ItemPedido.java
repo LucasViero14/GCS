@@ -1,3 +1,5 @@
+package modelo;
+
 public class ItemPedido {
 
 	private String descricao;
