@@ -21,6 +21,10 @@ public class RegistroPedidos {
         pedidos.remove(pedido);
     }
 
+    public ArrayList<Pedido> listarTodos() {
+        return new ArrayList<>(pedidos);
+    }
+
     public ArrayList<Pedido> listarEntreDatas(LocalDate inicio, LocalDate fim) {
         ArrayList<Pedido> resultado = new ArrayList<>();
 
@@ -92,7 +96,9 @@ public class RegistroPedidos {
         int quantidade = 0;
 
         for (Pedido pedido : pedidos) {
-            if (pedido.getStatusPedido() == StatusPedido.APROVADO) {
+            // Pedido concluido tambem foi aprovado antes de ser entregue
+            if (pedido.getStatusPedido() == StatusPedido.APROVADO ||
+                    pedido.getStatusPedido() == StatusPedido.CONCLUIDO) {
                 quantidade++;
             }
         }
