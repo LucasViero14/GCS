@@ -1,3 +1,5 @@
+package modelo;
+
 public enum StatusPedido {
     ABERTO,
     APROVADO,
