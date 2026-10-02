@@ -2,105 +2,108 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Pedido {
-	private int id;
-	private boolean statusPedido;
-	private Funcionario funcionarioSol;
-	private Departamento departamento;
-	private LocalDate dataPedido;
-	private LocalDate dataConclusao;
-	private ArrayList<ItemPedido> itens;
-	private Funcionario funcionario;
 
-	public Pedido(int id, Funcionario funcionarioSol, Departamento departamento, ArrayList<ItemPedido> itens, Funcionario funcionario) {
-		this.id = id;
-		this.statusPedido = false;
-		this.funcionarioSol = funcionarioSol;
-		this.departamento = departamento;
-		this.dataPedido = LocalDate.now();
-		this.dataConclusao = null;
-		this.itens = itens;
-		this.funcionario = funcionario;
-	}
+    private int id;
+    private StatusPedido statusPedido;
+    private Funcionario funcionarioSol;
+    private Departamento departamento;
+    private LocalDate dataPedido;
+    private LocalDate dataConclusao;
+    private ArrayList<ItemPedido> itens;
 
-	public void adicionarItem(Pedido item) {
-		itens.add(item);
-	}
-	public void removerItem(Pedido item) {
-		itens.remove(item);
-	}
-	public double calcularTotal(){
-		double calculo = 0;
-		for (ItemPedido item : itens) {
-			calculo += item.getValor();
-		}
-		return calculo;
-	}
-	public void setStatusPedido(boolean val){
-		this.statusPedido = val;
-	}
-	public boolean getStatusPedido(){
-		return statusPedido;
-	}
+    public Pedido(int id, Funcionario funcionarioSol, Departamento departamento) {
+        this.id = id;
+        this.funcionarioSol = funcionarioSol;
+        this.departamento = departamento;
+        this.dataPedido = LocalDate.now();
+        this.dataConclusao = null;
+        this.statusPedido = StatusPedido.ABERTO;
+        this.itens = new ArrayList<>();
+    }
 
-	public int getId() {
-		return id;
-	}
+    public void adicionarItem(ItemPedido item) {
+        if (item != null) {
+            itens.add(item);
+        }
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void removerItem(ItemPedido item) {
+        itens.remove(item);
+    }
 
-	public Funcionario getFuncionarioSol() {
-		return funcionarioSol;
-	}
+    public double calcularTotal() {
+        double total = 0;
 
-	public void setFuncionarioSol(Funcionario funcionarioSol) {
-		this.funcionarioSol = funcionarioSol;
-	}
+        for (ItemPedido item : itens) {
+            total += item.calcularTotal();
+        }
 
-	public Departamento getDepartamento() {
-		return departamento;
-	}
+        return total;
+    }
 
-	public void setDepartamento(Departamento departamento) {
-		this.departamento = departamento;
-	}
+    public boolean aprovar() {
+        if (statusPedido == StatusPedido.ABERTO) {
+            statusPedido = StatusPedido.APROVADO;
+            return true;
+        }
 
-	public LocalDate getDataPedido() {
-		return dataPedido;
-	}
+        return false;
+    }
 
-	public void setDataPedido(LocalDate dataPedido) {
-		this.dataPedido = dataPedido;
-	}
+    public boolean reprovar() {
+        if (statusPedido == StatusPedido.ABERTO) {
+            statusPedido = StatusPedido.REPROVADO;
+            return true;
+        }
 
-	public LocalDate getDataConclusao() {
-		return dataConclusao;
-	}
+        return false;
+    }
 
-	public void setDataConclusao(LocalDate dataConclusao) {
-		this.dataConclusao = dataConclusao;
-	}
+    public boolean concluir() {
+        if (statusPedido == StatusPedido.APROVADO) {
+            statusPedido = StatusPedido.CONCLUIDO;
+            dataConclusao = LocalDate.now();
+            return true;
+        }
 
-	public ArrayList<Pedido> getItens() {
-		return itens;
-	}
+        return false;
+    }
 
-	public void setItens(ArrayList<Pedido> itens) {
-		this.itens = itens;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Funcionario getFuncionario() {
-		return funcionario;
-	}
+    public Funcionario getFuncionarioSol() {
+        return funcionarioSol;
+    }
 
-	public void setFuncionario(Funcionario funcionario) {
-		this.funcionario = funcionario;
-	}
+    public Departamento getDepartamento() {
+        return departamento;
+    }
 
-	public void concluir() {
-		setStatusPedido(true);
-		dataConclusao = LocalDate.now();
-	}
+    public LocalDate getDataPedido() {
+        return dataPedido;
+    }
 
+    public LocalDate getDataConclusao() {
+        return dataConclusao;
+    }
+
+    public StatusPedido getStatusPedido() {
+        return statusPedido;
+    }
+
+    public ArrayList<ItemPedido> getItens() {
+        return itens;
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido " + id +
+                " | Funcionário: " + funcionarioSol.getNome() +
+                " | Departamento: " + departamento.getNome() +
+                " | Data: " + dataPedido +
+                " | Status: " + statusPedido +
+                " | Total: " + calcularTotal();
+    }
 }
