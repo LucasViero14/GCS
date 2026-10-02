@@ -3,83 +3,162 @@ import java.util.ArrayList;
 
 public class RegistroPedidos {
 
-	private ArrayList<Pedido> pedidos = new ArrayList<>();
+    private ArrayList<Pedido> pedidos = new ArrayList<>();
 
-	public void adicionarPedido(Pedido pedido) {
-		pedidos.add(pedido);
-	}
+    public void adicionarPedido(Pedido pedido) {
+        if (pedido != null) {
+            pedidos.add(pedido);
+        }
+    }
 
-	public void excluirPedido(Pedido pedido) {
-		pedidos.remove(pedido);
-	}
+    public void excluirPedido(Pedido pedido) {
+        pedidos.remove(pedido);
+    }
 
-	// Pedidos cuja data esta entre inicio e fim (inclusive)
-	public ArrayList<Pedido> listarEntreDatas(LocalDate inicio, LocalDate fim) {
-		ArrayList<Pedido> resultado = new ArrayList<>();
-		for (Pedido p : pedidos) {
-			LocalDate data = p.getDataPedido();
-			if (!data.isBefore(inicio) && !data.isAfter(fim)) {
-				resultado.add(p);
-			}
-		}
-		return resultado;
-	}
+    public ArrayList<Pedido> listarEntreDatas(LocalDate inicio, LocalDate fim) {
+        ArrayList<Pedido> resultado = new ArrayList<>();
 
-	public ArrayList<Pedido> buscarPorFuncionario(Funcionario funcionario) {
-		ArrayList<Pedido> resultado = new ArrayList<>();
-		for (Pedido p : pedidos) {
-			if (p.getFuncionarioSol().equals(funcionario)) {
-				resultado.add(p);
-			}
-		}
-		return resultado;
-	}
+        for (Pedido pedido : pedidos) {
+            LocalDate data = pedido.getDataPedido();
 
-	// Pedidos que tenham algum item cuja descricao contenha o termo
-	public ArrayList<Pedido> buscarPorDescricao(String descricao) {
-		ArrayList<Pedido> resultado = new ArrayList<>();
-		String termo = descricao.toLowerCase();
-		for (Pedido p : pedidos) {
-			for (ItemPedido item : p.getItens()) {
-				if (item.getDescricao() != null && item.getDescricao().toLowerCase().contains(termo)) {
-					resultado.add(p);
-					break;
-				}
-			}
-		}
-		return resultado;
-	}
+            if (!data.isBefore(inicio) && !data.isAfter(fim)) {
+                resultado.add(pedido);
+            }
+        }
 
-	public Pedido buscarMaiorPedidoAberto() {
-		return null;
-	}
+        return resultado;
+    }
 
-	public int quantidadeTotal() {
-		return 0;
-	}
+    public ArrayList<Pedido> buscarPorFuncionario(Funcionario funcionario) {
+        ArrayList<Pedido> resultado = new ArrayList<>();
 
-	public int quantidadeAprovados() {
-		return 0;
-	}
+        for (Pedido pedido : pedidos) {
+            if (pedido.getFuncionarioSol().equals(funcionario)) {
+                resultado.add(pedido);
+            }
+        }
 
-	public int quantidadeReprovados() {
-		return 0;
-	}
+        return resultado;
+    }
 
-	public double percentualAprovados() {
-		return 0;
-	}
+    public ArrayList<Pedido> buscarPorDescricao(String descricao) {
+        ArrayList<Pedido> resultado = new ArrayList<>();
 
-	public double percentualReprovados() {
-		return 0;
-	}
+        String termo = descricao.toLowerCase();
 
-	public int quantUlt30Dias() {
-		return 0;
-	}
+        for (Pedido pedido : pedidos) {
+            for (ItemPedido item : pedido.getItens()) {
 
-	public double valorMedioUlt30Dias() {
-		return 0;
-	}
+                if (item.getDescricao() != null &&
+                        item.getDescricao().toLowerCase().contains(termo)) {
 
+                    resultado.add(pedido);
+                    break;
+                }
+            }
+        }
+
+        return resultado;
+    }
+
+    public Pedido buscarMaiorPedidoAberto() {
+        Pedido maior = null;
+
+        for (Pedido pedido : pedidos) {
+            if (pedido.getStatusPedido() == StatusPedido.ABERTO) {
+
+                if (maior == null ||
+                        pedido.calcularTotal() > maior.calcularTotal()) {
+
+                    maior = pedido;
+                }
+            }
+        }
+
+        return maior;
+    }
+
+    public int quantidadeTotal() {
+        return pedidos.size();
+    }
+
+    public int quantidadeAprovados() {
+        int quantidade = 0;
+
+        for (Pedido pedido : pedidos) {
+            if (pedido.getStatusPedido() == StatusPedido.APROVADO) {
+                quantidade++;
+            }
+        }
+
+        return quantidade;
+    }
+
+    public int quantidadeReprovados() {
+        int quantidade = 0;
+
+        for (Pedido pedido : pedidos) {
+            if (pedido.getStatusPedido() == StatusPedido.REPROVADO) {
+                quantidade++;
+            }
+        }
+
+        return quantidade;
+    }
+
+    public double percentualAprovados() {
+        if (quantidadeTotal() == 0) {
+            return 0;
+        }
+
+        return (quantidadeAprovados() * 100.0) / quantidadeTotal();
+    }
+
+    public double percentualReprovados() {
+        if (quantidadeTotal() == 0) {
+            return 0;
+        }
+
+        return (quantidadeReprovados() * 100.0) / quantidadeTotal();
+    }
+
+    public int quantUlt30Dias() {
+        LocalDate hoje = LocalDate.now();
+        LocalDate inicio = hoje.minusDays(30);
+
+        int quantidade = 0;
+
+        for (Pedido pedido : pedidos) {
+            LocalDate data = pedido.getDataPedido();
+
+            if (!data.isBefore(inicio) && !data.isAfter(hoje)) {
+                quantidade++;
+            }
+        }
+
+        return quantidade;
+    }
+
+    public double valorMedioUlt30Dias() {
+        LocalDate hoje = LocalDate.now();
+        LocalDate inicio = hoje.minusDays(30);
+
+        double soma = 0;
+        int quantidade = 0;
+
+        for (Pedido pedido : pedidos) {
+            LocalDate data = pedido.getDataPedido();
+
+            if (!data.isBefore(inicio) && !data.isAfter(hoje)) {
+                soma += pedido.calcularTotal();
+                quantidade++;
+            }
+        }
+
+        if (quantidade == 0) {
+            return 0;
+        }
+
+        return soma / quantidade;
+    }
 }
