@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/GCS.iml" filepath="$PROJECT_DIR$/.idea/GCS.iml" />    </modules>
+      <module fileurl="file://$PROJECT_DIR$/GCS.iml" filepath="$PROJECT_DIR$/GCS.iml" />
+    </modules>
   </component>
 </project>
