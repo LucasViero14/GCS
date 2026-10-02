@@ -1,3 +1,9 @@
+package servico;
+
+import modelo.Funcionario;
+import modelo.ItemPedido;
+import modelo.Pedido;
+import modelo.StatusPedido;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -13,6 +19,10 @@ public class RegistroPedidos {
 
     public void excluirPedido(Pedido pedido) {
         pedidos.remove(pedido);
+    }
+
+    public ArrayList<Pedido> listarTodos() {
+        return new ArrayList<>(pedidos);
     }
 
     public ArrayList<Pedido> listarEntreDatas(LocalDate inicio, LocalDate fim) {
@@ -86,7 +96,9 @@ public class RegistroPedidos {
         int quantidade = 0;
 
         for (Pedido pedido : pedidos) {
-            if (pedido.getStatusPedido() == StatusPedido.APROVADO) {
+            // Pedido concluido tambem foi aprovado antes de ser entregue
+            if (pedido.getStatusPedido() == StatusPedido.APROVADO ||
+                    pedido.getStatusPedido() == StatusPedido.CONCLUIDO) {
                 quantidade++;
             }
         }

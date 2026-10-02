@@ -1,3 +1,13 @@
+package app;
+
+import modelo.Administrador;
+import modelo.Departamento;
+import modelo.Funcionario;
+import modelo.ItemPedido;
+import modelo.Pedido;
+import modelo.StatusPedido;
+import modelo.Usuario;
+import servico.RegistroPedidos;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -71,7 +81,8 @@ public class App {
 
             System.out.println(
                     usuario.getId() + " - " +
-                    usuario.getNome() + " - " +
+                    usuario.getNome() + " (" +
+                    usuario.getIniciais() + ") - " +
                     tipo
             );
         }
@@ -89,16 +100,17 @@ public class App {
             if (usuario.getId() == id) {
                 usuarioLogado = usuario;
 
-                System.out.println(
-                        "Usuario atual: " +
-                        usuarioLogado.getNome()
-                );
+                System.out.println("Usuario atual: " + descreverUsuarioLogado());
 
                 return;
             }
         }
 
         System.out.println("Usuario nao encontrado.");
+    }
+
+    private String descreverUsuarioLogado() {
+        return usuarioLogado.getNome() + " (" + usuarioLogado.getIniciais() + ")";
     }
 
     private void menuFuncionario() {
@@ -108,7 +120,7 @@ public class App {
         while (continuar && usuarioLogado instanceof Funcionario) {
 
             System.out.println("\n===== MENU FUNCIONARIO =====");
-            System.out.println("Usuario atual: " + usuarioLogado.getNome());
+            System.out.println("Usuario atual: " + descreverUsuarioLogado());
             System.out.println("1 - Criar pedido");
             System.out.println("2 - Excluir pedido em aberto");
             System.out.println("3 - Trocar usuario");
@@ -148,7 +160,7 @@ public class App {
         while (continuar && usuarioLogado instanceof Administrador) {
 
             System.out.println("\n===== MENU ADMINISTRADOR =====");
-            System.out.println("Usuario atual: " + usuarioLogado.getNome());
+            System.out.println("Usuario atual: " + descreverUsuarioLogado());
             System.out.println("1 - Criar pedido");
             System.out.println("2 - Listar pedidos entre datas");
             System.out.println("3 - Buscar pedidos por funcionario");
@@ -378,6 +390,82 @@ public class App {
 
     usuarios.add(administrador1);
     usuarios.add(administrador2);
+
+    // =========================
+    // PEDIDOS
+    // =========================
+    // Datas relativas a hoje, para sempre haver pedidos dentro e fora
+    // dos ultimos 30 dias, e todos os status representados.
+
+    LocalDate hoje = LocalDate.now();
+
+    Pedido pedido1 = criarPedidoInicial(funcionario1, hoje.minusDays(90),
+            new ItemPedido("Notebook Dell", 3500.00, 1),
+            new ItemPedido("Mouse sem fio", 80.00, 2));
+    pedido1.aprovar();
+    pedido1.concluir();
+
+    Pedido pedido2 = criarPedidoInicial(funcionario2, hoje.minusDays(60),
+            new ItemPedido("Monitor 24 polegadas", 900.00, 3));
+    pedido2.reprovar();
+
+    Pedido pedido3 = criarPedidoInicial(funcionario4, hoje.minusDays(45),
+            new ItemPedido("Licenca de software contabil", 4500.00, 1),
+            new ItemPedido("Calculadora financeira", 250.00, 4));
+    pedido3.aprovar();
+
+    Pedido pedido4 = criarPedidoInicial(funcionario7, hoje.minusDays(25),
+            new ItemPedido("Cadeira ergonomica", 1200.00, 2));
+    pedido4.aprovar();
+
+    Pedido pedido5 = criarPedidoInicial(funcionario10, hoje.minusDays(20),
+            new ItemPedido("Resma de papel A4", 30.00, 50),
+            new ItemPedido("Caneta esferografica", 2.50, 200));
+    pedido5.reprovar();
+
+    Pedido pedido6 = criarPedidoInicial(funcionario13, hoje.minusDays(15),
+            new ItemPedido("Banner promocional", 350.00, 5),
+            new ItemPedido("Camiseta personalizada", 45.00, 40));
+    pedido6.aprovar();
+    pedido6.concluir();
+
+    criarPedidoInicial(funcionario5, hoje.minusDays(10),
+            new ItemPedido("Impressora multifuncional", 2200.00, 2),
+            new ItemPedido("Toner", 400.00, 6));
+
+    criarPedidoInicial(funcionario3, hoje.minusDays(5),
+            new ItemPedido("SSD 1TB", 450.00, 4),
+            new ItemPedido("Memoria RAM 16GB", 300.00, 4));
+
+    criarPedidoInicial(funcionario11, hoje.minusDays(3),
+            new ItemPedido("Notebook Lenovo", 4200.00, 1));
+
+    criarPedidoInicial(funcionario8, hoje.minusDays(1),
+            new ItemPedido("Livro de gestao de pessoas", 90.00, 5));
+
+    criarPedidoInicial(funcionario14, hoje,
+            new ItemPedido("Camera fotografica", 2800.00, 1),
+            new ItemPedido("Tripe", 200.00, 1));
+	}
+
+	// Monta um pedido dos dados iniciais e ja registra no sistema
+	private Pedido criarPedidoInicial(Funcionario funcionario, LocalDate data, ItemPedido... itens) {
+
+	    Pedido pedido = new Pedido(
+	            proximoIdPedido,
+	            funcionario,
+	            funcionario.getDepartamento(),
+	            data
+	    );
+
+	    for (ItemPedido item : itens) {
+	        pedido.adicionarItem(item);
+	    }
+
+	    registroPedidos.adicionarPedido(pedido);
+	    proximoIdPedido++;
+
+	    return pedido;
 	}
 private void criarPedido() {
 
@@ -444,36 +532,36 @@ private void criarPedido() {
         int quantidade = lerInteiro("Quantidade: ");
 
         if (valorUnitario <= 0 || quantidade <= 0) {
-            System.out.println("Valor e quantidade devem ser maiores que zero.");
-            continue;
-        }
+            System.out.println("Item nao adicionado. Valor e quantidade devem ser maiores que zero.");
+        } else {
 
-        ItemPedido item = new ItemPedido(
-                descricao,
-                valorUnitario,
-                quantidade
-        );
-
-        double novoTotal = pedido.calcularTotal() + item.calcularTotal();
-
-        if (!departamento.podeRealizarPedido(novoTotal)) {
-            System.out.printf(
-                    "Item nao adicionado. O total de R$ %.2f ultrapassaria " +
-                    "o limite de R$ %.2f do departamento.%n",
-                    novoTotal,
-                    departamento.getVmax()
+            ItemPedido item = new ItemPedido(
+                    descricao,
+                    valorUnitario,
+                    quantidade
             );
-            continue;
+
+            double novoTotal = pedido.calcularTotal() + item.calcularTotal();
+
+            if (!departamento.podeRealizarPedido(novoTotal)) {
+                System.out.printf(
+                        "Item nao adicionado. O total de R$ %.2f ultrapassaria " +
+                        "o limite de R$ %.2f do departamento.%n",
+                        novoTotal,
+                        departamento.getVmax()
+                );
+            } else {
+                pedido.adicionarItem(item);
+                adicionouItem = true;
+
+                System.out.printf(
+                        "Item adicionado. Total atual: R$ %.2f%n",
+                        pedido.calcularTotal()
+                );
+            }
         }
 
-        pedido.adicionarItem(item);
-        adicionouItem = true;
-
-        System.out.printf(
-                "Item adicionado. Total atual: R$ %.2f%n",
-                pedido.calcularTotal()
-        );
-
+        // Pergunta sempre, para o usuario poder desistir mesmo depois de um item recusado
         String continuar = lerTexto("Adicionar outro item? (S/N): ");
 
         if (!continuar.equalsIgnoreCase("S")) {
@@ -651,10 +739,7 @@ private void avaliarPedido() {
     }
 
     ArrayList<Pedido> pedidos =
-            registroPedidos.listarEntreDatas(
-                    LocalDate.MIN,
-                    LocalDate.MAX
-            );
+            registroPedidos.listarTodos();
 
     ArrayList<Pedido> pedidosAbertos = new ArrayList<>();
 
@@ -694,8 +779,12 @@ private void avaliarPedido() {
         return;
     }
 
+    System.out.println();
+    System.out.println(pedidoEscolhido.detalhar());
+
     System.out.println("\n1 - Aprovar");
     System.out.println("2 - Reprovar");
+    System.out.println("0 - Voltar sem avaliar");
 
     int opcao = lerInteiro("Escolha: ");
 
@@ -726,6 +815,10 @@ private void avaliarPedido() {
             System.out.println("Nao foi possivel reprovar o pedido.");
         }
 
+    } else if (opcao == 0) {
+
+        System.out.println("Pedido mantido em aberto.");
+
     } else {
 
         System.out.println("Opcao invalida.");
@@ -741,10 +834,7 @@ private void concluirPedido() {
     }
 
     ArrayList<Pedido> pedidos =
-            registroPedidos.listarEntreDatas(
-                    LocalDate.MIN,
-                    LocalDate.MAX
-            );
+            registroPedidos.listarTodos();
 
     ArrayList<Pedido> pedidosAprovados = new ArrayList<>();
 
